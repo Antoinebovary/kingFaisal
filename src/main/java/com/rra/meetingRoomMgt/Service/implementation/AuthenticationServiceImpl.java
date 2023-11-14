@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.Service.implementation;
 
+import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.AuthenticationException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setMobileNo(request.getMobileNo());
             user.setEmail(request.getEmail());
             user.setLoginFailCount(0);
-            user.setUserStatus("true");
+            user.setUserStatus("active");
             user.setPosition(request.getPosition());
 
             // Set created_at and updated_at with the current timestamp
@@ -47,37 +50,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse signin(SigninRequest request) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    public Object signin(SigninRequest request) {
+           return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())).getPrincipal();
+    }
 
-            // If authentication is successful, reset login failure count
-            Users user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-            user.setLoginFailCount(0);
-            userRepository.save(user);
 
-            // Generate JWT token
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
+        Users user = userRepository.findByEmail(userEmail).orElseThrow();
+        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
             String jwt = jwtService.generateToken(user);
-            return JwtAuthenticationResponse.builder().token(jwt).build();
-        } catch (AuthenticationException e) {
-            // Authentication failed, handle the failure
-            handleLoginFailure(request.getEmail());
-            throw new IllegalArgumentException("Invalid email or password.");
+
+            return JwtAuthenticationResponse.builder()
+                    .accessToken(jwt)
+                    .refreshToken(refreshTokenRequest.getToken())
+                    .build();
         }
+        return null;
     }
-
-    private void handleLoginFailure(String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
-
-        // Increment login failure count
-        int currentFailCount = user.getLoginFailCount();
-        user.setLoginFailCount(currentFailCount + 1);
-        userRepository.save(user);
-
-    }
-
-
 }
