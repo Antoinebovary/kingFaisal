@@ -10,7 +10,7 @@ public interface AuthorityService {
     Object saveRoles(Authority authority);
     List<Authority> retrieveRoles();
     Object updateRoles(Authority authority);
-    void deleteRoles(int id, int newStatus);
+    Object deleteRoles(int id, int newStatus);
 
 
 }

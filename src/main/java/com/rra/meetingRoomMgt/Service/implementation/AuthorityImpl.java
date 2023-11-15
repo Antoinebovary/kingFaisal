@@ -37,39 +37,35 @@ public class AuthorityImpl implements AuthorityService {
 
     @Override
     public Object updateRoles(Authority authority) {
-        // Step 1: Fetch the existing entity by ID
+        // Fetch the existing entity by ID
         Authority existingAuthority = authorityRepo.findById(authority.getAuthorityNo()).orElse(null);
 
         if (existingAuthority == null) {
-            // Handle the case where the entity with the given ID doesn't exist
             return null;
         }
 
-        // Step 2: Update the properties of the existing entity
-        existingAuthority.setAuthorityName(authority.getAuthorityName());
-
-        Authority auth = new Authority();
-        auth.setStatus(1);
+        // Preserve the existing status value
+        int status = existingAuthority.getStatus();
 
         // Preserve the existing createdAt value
         LocalDateTime createdAt = existingAuthority.getCreatedAt();
 
+        // Step 2: Update the properties of the existing entity
+        existingAuthority.setAuthorityName(authority.getAuthorityName());
+
         // Set updatedAt with the current timestamp
         LocalDateTime updatedAt = LocalDateTime.now();
-        authority.setUpdatedAt(updatedAt);
+        existingAuthority.setUpdatedAt(updatedAt);
 
-        // Set the preserved createdAt value
-        authority.setCreatedAt(createdAt);
+        // Set the preserved status and createdAt values
+        existingAuthority.setStatus(status);
+        existingAuthority.setCreatedAt(createdAt);
 
-        return authorityRepo.save(authority);
+        return authorityRepo.save(existingAuthority);
     }
 
     @Override
-    public void deleteRoles(int id, int newStatus) {
-
-
-
-
-        authorityRepo.updateAuthorityByStatus(id, newStatus);
+    public Object deleteRoles(int id, int newStatus) {
+        return authorityRepo.updateAuthorityByStatus(id, newStatus);
     }
 }

@@ -23,6 +23,12 @@ public class AuthorityController {
         return ResponseEntity.ok(Map.of("msg", "role created successfuly", "role", SavedRole));
     }
 
+    @GetMapping(path = "/listall")
+    public List<Authority> retrieveCam() {
+        return authorityService.retrieveRoles();
+    }
+
+
     @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody Authority authority) {
         Object UpdatedRole  =  authorityService.updateRoles(authority);
@@ -35,14 +41,9 @@ public class AuthorityController {
         int newStatus = deleteRole.getStatus();
 
         authorityService.deleteRoles(id, newStatus);
-        Object DeletedRole  =  authorityService.updateRoles(deleteRole);
-        return ResponseEntity.ok(Map.of("msg", "role Deleted successfuly", "role", DeletedRole));
+        return ResponseEntity.ok(Map.of("msg", "role Deleted successfuly", "id", id));
     }
 
-    @GetMapping(path = "/listall")
-    public List<Authority> retrieveCam() {
-        return authorityService.retrieveRoles();
-    }
 
 
 }
