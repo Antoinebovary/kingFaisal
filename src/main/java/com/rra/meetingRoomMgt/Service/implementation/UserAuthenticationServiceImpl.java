@@ -6,7 +6,7 @@ import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
 import com.rra.meetingRoomMgt.modal.Users;
 import com.rra.meetingRoomMgt.Repository.UserRepository;
-import com.rra.meetingRoomMgt.Service.AuthenticationService;
+import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
 import com.rra.meetingRoomMgt.Service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,14 +14,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.springframework.security.core.AuthenticationException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class UserAuthenticationServiceImpl implements UserAuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -57,14 +55,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
+        String userEmail = jwtService.extractUserName(refreshTokenRequest.getAccessToken());
         Users user = userRepository.findByEmail(userEmail).orElseThrow();
-        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
+        if (jwtService.isTokenValid(refreshTokenRequest.getAccessToken(), user)) {
             String jwt = jwtService.generateToken(user);
 
             return JwtAuthenticationResponse.builder()
                     .accessToken(jwt)
-                    .refreshToken(refreshTokenRequest.getToken())
+                    .refreshToken(refreshTokenRequest.getAccessToken())
                     .build();
         }
         return null;

@@ -15,4 +15,8 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
 
     @Query(value = "SELECT nextval('user_no_sequence')", nativeQuery = true)
     Integer getNextValForUserNo();
+
+    boolean existsByEmail(String email);
+
+    boolean existsByEmpNo(String empNo);
 }

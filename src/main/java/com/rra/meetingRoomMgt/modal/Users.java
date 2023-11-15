@@ -65,8 +65,8 @@ public class Users implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
-    private Set<User_Authority> userAuthorities = new HashSet<>();
+//    @OneToMany(mappedBy = "user")
+//    private Set<User_Authority> userAuthorities = new HashSet<>();
 
 
 //    I added a Set<User_Authority> field named userAuthorities to represent the user's authorities.

@@ -2,48 +2,63 @@ package com.rra.meetingRoomMgt.Controller;
 
 import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.JwtService;
+import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
 import com.rra.meetingRoomMgt.modal.Users;
-import com.rra.meetingRoomMgt.Service.AuthenticationService;
+import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/rra/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationService authenticationService;
+    private final UserAuthenticationService userAuthenticationService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
 
     @PostMapping("/signup")
-    public ResponseEntity<Users> signup(@RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authenticationService.signup(request));
+    public ResponseEntity<Object> signup(@RequestBody SignUpRequest request) {
+
+        if (request.getFullnames() == null || request.getEmpNo() == null ||
+                request.getPassword() == null || request.getMobileNo() == null ||
+                request.getEmail() == null || request.getPosition() == null) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "All fields must be provided"));
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Email already exists"));
+        }
+
+        if (userRepository.existsByEmpNo(request.getEmpNo())) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Employee number already exists"));
+        }
+
+        if (!request.getMobileNo().matches("\\d+")) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Phone number must contain only numbers"));
+        }
+
+        Object SavedUser  =  userAuthenticationService.signup(request);
+        return ResponseEntity.ok(Map.of("msg", "account created successfuly", "user", SavedUser));
     }
 
     @PostMapping("/signin")
     ResponseEntity<Object> signin(@RequestBody SigninRequest request) {
         try {
 
-            Users user = (Users) authenticationService.signin(request);
-
+            Users user = (Users) userAuthenticationService.signin(request);
             // Generate JWT token and refresh token
             String jwt = jwtService.generateToken(user);
             String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
@@ -67,6 +82,24 @@ public class AuthenticationController {
             user.setLoginFailCount(currentFailCount + 1);
             userRepository.save(user);
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return ResponseEntity.ok(userAuthenticationService.refreshToken(refreshTokenRequest));
+    }
+
+    @GetMapping("/profile")
+    public UserDetails getUserProfile(Authentication authentication) {
+        // Retrieve user details from the authentication object
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof UserDetails) {
+                return (UserDetails) principal;
+            }
+        }
+        return null;
     }
 
 }
