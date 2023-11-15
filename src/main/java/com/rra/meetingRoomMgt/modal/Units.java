@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class Units {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UnitID")
-    private Long unitID;
+    private Integer unitID;
 
     @Column(name = "UnitName", nullable = false)
     private String unitName;
@@ -29,8 +30,8 @@ public class Units {
     private Long status;
 
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 }

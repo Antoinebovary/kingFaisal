@@ -11,7 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,10 +33,10 @@ public class Bookings {
     private Users user;
 
     @Column(name = "StartTime", nullable = false)
-    private Timestamp startTime;
+    private LocalDate startTime;
 
     @Column(name = "EndTime", nullable = false)
-    private Timestamp endTime;
+    private LocalDate endTime;
 
     @Column(name = "Purpose", nullable = false)
     private String purpose;
@@ -44,8 +46,8 @@ public class Bookings {
     private BookingStatus status;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 }

@@ -18,7 +18,6 @@ import java.util.Set;
 
 
 @Data
-//@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -65,6 +64,10 @@ public class Users implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public Users(Integer userNo) {
+        this.userNo = userNo;
+    }
+
 //    @OneToMany(mappedBy = "user")
 //    private Set<User_Authority> userAuthorities = new HashSet<>();
 
@@ -84,7 +87,7 @@ public class Users implements UserDetails {
 //                authorities.add(new SimpleGrantedAuthority(userAuthority.getAuthority().getAuthorityName()));
 //            }
 //        }
-//
+
 //        return authorities;
         return null;
     }

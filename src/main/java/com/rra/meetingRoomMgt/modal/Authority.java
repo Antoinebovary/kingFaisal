@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,17 +16,22 @@ public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Authority_no")
-    private int authorityNo;
+    private Integer authorityNo;
 
     @Column(name = "Authority_name")
     private String authorityName;
 
     @Column(name = "status")
-    private int status;
+    private Integer status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public Authority(Integer authorityNo) {
+        this.authorityNo = authorityNo;
+    }
+
 }
