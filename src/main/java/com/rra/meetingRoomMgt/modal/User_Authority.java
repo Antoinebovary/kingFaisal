@@ -36,4 +36,8 @@ public class User_Authority {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+
+
+
 }

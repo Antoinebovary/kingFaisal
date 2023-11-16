@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request.requestMatchers("/rra/v1/auth/**")
                         .permitAll()
 //                        .requestMatchers("/rra/admin/**").hasAuthority("admin")
-//                        .requestMatchers("/rra/user/**").hasAuthority("user")
+//                        .requestMatchers("/rra/v1/auth/**").hasAuthority("client")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

@@ -4,6 +4,7 @@ import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
+import com.rra.meetingRoomMgt.modal.User_Authority;
 import com.rra.meetingRoomMgt.modal.Users;
 import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -66,5 +68,41 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                     .build();
         }
         return null;
+    }
+
+    @Override
+    public List<Users> retrieveUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Object updateUsers(Users UpdateUsers) {
+        Users existingUsers = userRepository.findById(UpdateUsers.getStaffID()).orElse(null);
+
+        if (existingUsers == null) {
+            return null;
+        }
+
+        String status = existingUsers.getUserStatus();
+        LocalDateTime createdAt = existingUsers.getCreatedAt();
+
+        existingUsers.setFullnames(UpdateUsers.getFullnames());
+        existingUsers.setMobileNo(UpdateUsers.getMobileNo());
+        existingUsers.setPosition(UpdateUsers.getPosition());
+        existingUsers.setEmail(UpdateUsers.getEmail());
+        existingUsers.setEmpNo(UpdateUsers.getEmpNo());
+
+        LocalDateTime updatedAt = LocalDateTime.now();
+        existingUsers.setUpdatedAt(updatedAt);
+
+        existingUsers.setUserStatus(status);
+        existingUsers.setCreatedAt(createdAt);
+
+        return userRepository.save(existingUsers);
+    }
+
+    @Override
+    public Object deleteUsers(int id, String newStatus) {
+        return userRepository.updateUsersByStatus(id, newStatus);
     }
 }

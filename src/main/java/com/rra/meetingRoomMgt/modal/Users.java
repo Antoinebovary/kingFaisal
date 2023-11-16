@@ -68,7 +68,7 @@ public class Users implements UserDetails {
         this.userNo = userNo;
     }
 
-//    @OneToMany(mappedBy = "user")
+//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 //    private Set<User_Authority> userAuthorities = new HashSet<>();
 
 
@@ -81,13 +81,11 @@ public class Users implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 //        Set<GrantedAuthority> authorities = new HashSet<>();
-//
 //        if (userAuthorities != null) {
 //            for (User_Authority userAuthority : userAuthorities) {
 //                authorities.add(new SimpleGrantedAuthority(userAuthority.getAuthority().getAuthorityName()));
 //            }
 //        }
-
 //        return authorities;
         return null;
     }
