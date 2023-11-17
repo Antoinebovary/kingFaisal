@@ -37,4 +37,9 @@ public class Rooms {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public Rooms(int roomID) {
+        this.roomID = roomID;
+    }
+
 }

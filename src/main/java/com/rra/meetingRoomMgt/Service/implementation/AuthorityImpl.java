@@ -66,6 +66,6 @@ public class AuthorityImpl implements AuthorityService {
 
     @Override
     public Object deleteRoles(int id, int newStatus) {
-        return authorityRepo.updateAuthorityByStatus(id, newStatus);
+        return authorityRepo.updateRoomNamesByStatus(id, newStatus);
     }
 }
