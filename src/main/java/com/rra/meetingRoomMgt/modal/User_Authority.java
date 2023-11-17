@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "user_authority")
 public class User_Authority {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -71,7 +71,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(Map.of("msg", "User Updated successfuly", "User", UpdateUser));
     }
 
-    @PutMapping("/updateStatus")
+    @PutMapping("/delete")
     public ResponseEntity<Object> delete(@RequestBody Users deleteUser) {
         int id = deleteUser.getStaffID();
         String newStatus = deleteUser.getUserStatus();

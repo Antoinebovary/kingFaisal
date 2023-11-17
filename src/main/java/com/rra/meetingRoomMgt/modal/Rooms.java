@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "rooms")
 public class Rooms {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomID")
@@ -23,10 +24,13 @@ public class Rooms {
     private String roomLocation;
 
     @Column(name = "Capacity", nullable = false)
-    private Long capacity;
+    private Integer capacity;
 
     @Column(name = "RoomDescription", nullable = false)
     private String roomDescription;
+
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

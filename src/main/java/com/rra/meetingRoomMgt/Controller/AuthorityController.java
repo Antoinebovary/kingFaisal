@@ -36,7 +36,7 @@ public class AuthorityController {
         return ResponseEntity.ok(Map.of("msg", "role Updated successfuly", "role", UpdatedRole));
     }
 
-    @PutMapping("/updateStatus")
+    @PutMapping("/delete")
     public ResponseEntity<Object> delete(@RequestBody Authority deleteRole) {
         int id = deleteRole.getAuthorityNo();
         int newStatus = deleteRole.getStatus();

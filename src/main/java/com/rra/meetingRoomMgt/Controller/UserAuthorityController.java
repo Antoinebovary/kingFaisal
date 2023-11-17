@@ -36,7 +36,7 @@ public class UserAuthorityController {
         return ResponseEntity.ok(Map.of("msg", "UserRole Updated successfuly", "role", UpdateUserdRole));
     }
 
-    @PutMapping("/updateStatus")
+    @PutMapping("/delete")
     public ResponseEntity<Object> delete(@RequestBody User_Authority deleteRole) {
         int id = deleteRole.getId();
         int newStatus = deleteRole.getStatus();
