@@ -31,7 +31,7 @@ public class RoomsImpl implements RoomsService {
         room.setCreatedAt(currentTimestamp);
         room.setUpdatedAt(currentTimestamp);
 
-        return roomsRepo.save(rooms);
+        return roomsRepo.save(room);
     }
 
     @Override
