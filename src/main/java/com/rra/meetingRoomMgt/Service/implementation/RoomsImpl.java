@@ -2,7 +2,6 @@ package com.rra.meetingRoomMgt.Service.implementation;
 
 import com.rra.meetingRoomMgt.Repository.RoomsRepository;
 import com.rra.meetingRoomMgt.Service.RoomsService;
-import com.rra.meetingRoomMgt.modal.Authority;
 import com.rra.meetingRoomMgt.modal.Rooms;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

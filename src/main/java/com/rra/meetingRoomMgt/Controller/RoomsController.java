@@ -43,7 +43,7 @@ public class RoomsController  {
         int newStatus = deletedRoom.getStatus();
 
         roomsService.deleteRooms(id, newStatus);
-        return ResponseEntity.ok(Map.of("msg", "role Deleted successfuly", "id", id));
+        return ResponseEntity.ok(Map.of("msg", "room Deleted successfuly", "id", id));
     }
 
 

@@ -4,7 +4,6 @@ import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
-import com.rra.meetingRoomMgt.modal.User_Authority;
 import com.rra.meetingRoomMgt.modal.Users;
 import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
