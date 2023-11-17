@@ -23,11 +23,15 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/rra/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
     private final UserRepository userRepository;
+
+    private final JwtService jwtService;
+
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody SignUpRequest request) {
@@ -93,6 +97,36 @@ public class AuthenticationController {
             }
         }
         return null;
+    }
+
+    @PostMapping("/signin")
+    ResponseEntity<Object> signin(@RequestBody SigninRequest request) {
+        try {
+
+            Users user = (Users) userAuthenticationService.signin(request);
+            // Generate JWT token and refresh token
+            String jwt = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+            return ResponseEntity.ok(Map.of("msg", "logged in successfuly", "user", user, "accessToken", jwt, "refreshToken", refreshToken));
+        } catch (AuthenticationException e) {
+            // Authentication failed, handle the failure
+            handleLoginFailure(request.getEmail());
+            return ResponseEntity.badRequest().body(Map.of("msg", "Invalid email or password"));
+        }
+
+    }
+
+    private void handleLoginFailure(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElse(null);
+
+        if (user != null) {
+            // Increment login failure count
+            int currentFailCount = user.getLoginFailCount();
+            user.setLoginFailCount(currentFailCount + 1);
+            userRepository.save(user);
+        }
     }
 
 
