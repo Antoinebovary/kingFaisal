@@ -51,6 +51,12 @@ public class Users implements UserDetails {
     @Column(name = "user_status")
     private String userStatus;
 
+//
+//    private String units;
+//
+//
+//    private String departments;
+
     @Column(name = "lgn_fail_count")
     private Integer loginFailCount;
 
