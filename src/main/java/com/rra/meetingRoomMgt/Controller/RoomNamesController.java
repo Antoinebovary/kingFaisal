@@ -2,7 +2,6 @@ package com.rra.meetingRoomMgt.Controller;
 
 
 import com.rra.meetingRoomMgt.Service.RoomNamesService;
-import com.rra.meetingRoomMgt.modal.Rooms;
 import com.rra.meetingRoomMgt.modal.RoomsNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
