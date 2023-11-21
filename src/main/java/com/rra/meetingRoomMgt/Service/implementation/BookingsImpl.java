@@ -7,7 +7,6 @@ import com.rra.meetingRoomMgt.Service.BookingsService;
 import com.rra.meetingRoomMgt.modal.Bookings;
 import com.rra.meetingRoomMgt.modal.Enums.BookingStatus;
 import com.rra.meetingRoomMgt.modal.Rooms;
-import com.rra.meetingRoomMgt.modal.RoomsNames;
 import com.rra.meetingRoomMgt.modal.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

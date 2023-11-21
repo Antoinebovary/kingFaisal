@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,7 +16,7 @@ public class Departments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DepartmentID")
-    private Long departmentID;
+    private Integer departmentID;
 
     @Column(name = "DepartmentName", nullable = false)
     private String departmentName;
@@ -30,4 +29,8 @@ public class Departments {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public Departments(Integer departmentID) {
+        this.departmentID = departmentID;
+    }
 }

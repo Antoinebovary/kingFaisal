@@ -27,7 +27,7 @@ public class Units {
     private Departments department;
 
     @Column(name = "status", nullable = false)
-    private Long status;
+    private Integer status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
