@@ -4,6 +4,7 @@ package com.rra.meetingRoomMgt.Controller;
 import com.rra.meetingRoomMgt.Service.RoomNamesService;
 import com.rra.meetingRoomMgt.modal.RoomsNames;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +28,9 @@ public class RoomNamesController {
     }
 
     @GetMapping(path = "/listall")
-    public List<RoomsNames> retrieveRoomNames() {
-        return roomNamesService.retrieveRoomNames();
+    public ResponseEntity<List<RoomsNames>>  retrieveRoomNames() {
+        List<RoomsNames> roooNames = roomNamesService.retrieveRoomNames();
+        return new ResponseEntity<>(roooNames, HttpStatus.OK);
     }
 
 

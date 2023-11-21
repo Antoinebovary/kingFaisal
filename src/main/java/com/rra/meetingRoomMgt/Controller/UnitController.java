@@ -1,7 +1,7 @@
 package com.rra.meetingRoomMgt.Controller;
 
 import com.rra.meetingRoomMgt.Service.UnitsService;
-import com.rra.meetingRoomMgt.modal.Departments;
+
 import com.rra.meetingRoomMgt.modal.Units;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

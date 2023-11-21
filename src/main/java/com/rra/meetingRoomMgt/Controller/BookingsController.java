@@ -27,10 +27,10 @@ public class BookingsController {
     }
 
     @GetMapping(path = "/listall")
-    public List<Bookings> retrieveBookings() {
-        return bookingsService.retrieveBookings();
+    public  ResponseEntity<List<Bookings>>retrieveBookings() {
+        List<Bookings> bookings = bookingsService.retrieveBookings();
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
-
 
     @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody Bookings bookings) {

@@ -3,6 +3,7 @@ package com.rra.meetingRoomMgt.Controller;
 import com.rra.meetingRoomMgt.Service.UserAuthorityService;
 import com.rra.meetingRoomMgt.modal.User_Authority;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,9 @@ public class UserAuthorityController {
     }
 
     @GetMapping(path = "/listall")
-    public List<User_Authority> retrieveCam() {
-        return UserAuthorityService.retrieveMappedRoles();
+    public  ResponseEntity<List<User_Authority>> retrieveUserAuthority() {
+        List<User_Authority> userAuth = UserAuthorityService.retrieveMappedRoles();
+        return new ResponseEntity<>(userAuth, HttpStatus.OK);
     }
 
 

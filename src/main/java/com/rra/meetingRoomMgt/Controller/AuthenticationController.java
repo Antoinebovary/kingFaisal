@@ -4,12 +4,12 @@ import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.JwtService;
 import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
-import com.rra.meetingRoomMgt.modal.User_Authority;
 import com.rra.meetingRoomMgt.modal.Users;
 import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
@@ -60,8 +60,9 @@ public class AuthenticationController {
 
 
     @GetMapping(path = "/listall")
-    public List<Users> retrieveCam() {
-        return userAuthenticationService.retrieveUsers();
+    public ResponseEntity<List<Users>>retrieveUsers() {
+        List<Users> users =  userAuthenticationService.retrieveUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 

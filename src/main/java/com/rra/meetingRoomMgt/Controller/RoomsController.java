@@ -3,6 +3,7 @@ package com.rra.meetingRoomMgt.Controller;
 import com.rra.meetingRoomMgt.Service.RoomsService;
 import com.rra.meetingRoomMgt.modal.Rooms;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,9 @@ public class RoomsController  {
     }
 
     @GetMapping(path = "/listall")
-    public List<Rooms> retrieveRooms() {
-        return roomsService.retrieveRooms();
+    public ResponseEntity<List<Rooms>> retrieveRooms() {
+        List<Rooms> roo = roomsService.retrieveRooms();
+        return new ResponseEntity<>(roo, HttpStatus.OK);
     }
 
 

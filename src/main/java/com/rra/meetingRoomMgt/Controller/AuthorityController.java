@@ -3,6 +3,7 @@ package com.rra.meetingRoomMgt.Controller;
 import com.rra.meetingRoomMgt.Service.AuthorityService;
 import com.rra.meetingRoomMgt.modal.Authority;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,9 @@ public class AuthorityController {
     }
 
     @GetMapping(path = "/listall")
-    public List<Authority> retrieveCam() {
-        return authorityService.retrieveRoles();
+    public ResponseEntity<List<Authority>> retrieveAutorities() {
+        List<Authority> authority = authorityService.retrieveRoles();
+        return new ResponseEntity<>(authority, HttpStatus.OK);
     }
 
 
