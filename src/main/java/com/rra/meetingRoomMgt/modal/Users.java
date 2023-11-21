@@ -74,8 +74,13 @@ public class Users implements UserDetails {
         this.userNo = userNo;
     }
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-//    private Set<User_Authority> userAuthorities = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = @JoinColumn(name = "user_no"),
+            inverseJoinColumns = @JoinColumn(name = "Authority_no")
+    )
+    private Set<Authority> authorities = new HashSet<>();
 
 
 //    I added a Set<User_Authority> field named userAuthorities to represent the user's authorities.
@@ -86,15 +91,18 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        Set<GrantedAuthority> authorities = new HashSet<>();
-//        if (userAuthorities != null) {
-//            for (User_Authority userAuthority : userAuthorities) {
-//                authorities.add(new SimpleGrantedAuthority(userAuthority.getAuthority().getAuthorityName()));
-//            }
-//        }
-//        return authorities;
-        return null;
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        if (this.authorities != null) {
+            for (Authority authority : this.authorities) {
+                authorities.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
+            }
+        }
+        return authorities;
+//        return null;
     }
+
+
+
 
     @Override
     public String getUsername() {

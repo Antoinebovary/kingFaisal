@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/departments")
+@RequestMapping("/rra/v1/admin/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
 

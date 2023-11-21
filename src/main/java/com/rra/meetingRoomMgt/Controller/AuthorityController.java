@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/roles")
+@RequestMapping("/rra/v1/admin/roles")
 @RequiredArgsConstructor
 public class AuthorityController {
 

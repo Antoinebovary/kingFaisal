@@ -1,6 +1,7 @@
 package com.rra.meetingRoomMgt.Config;
 
 import com.rra.meetingRoomMgt.Service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 
@@ -31,14 +32,21 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/rra/v1/auth/**")
+                .authorizeHttpRequests(request -> request.requestMatchers("/rra/v1/home/**")
                         .permitAll()
-//                        .requestMatchers("/rra/admin/**").hasAuthority("admin")
-//                        .requestMatchers("/rra/v1/auth/**").hasAuthority("client")
+                        .requestMatchers("/rra/v1/admin/**").hasAuthority("admin")
+                        .requestMatchers("/rra/v1/client/**").hasAuthority("client")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"error\": \"Unauthorized access. Authorized access only.\"}");
+                        })
+        );
         return http.build();
     }
 

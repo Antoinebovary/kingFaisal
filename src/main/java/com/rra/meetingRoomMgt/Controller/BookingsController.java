@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/bookings")
+@RequestMapping("/rra/v1/client/bookings")
 @RequiredArgsConstructor
 public class BookingsController {
 

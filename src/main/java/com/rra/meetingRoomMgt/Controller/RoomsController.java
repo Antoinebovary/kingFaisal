@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/rooms")
+@RequestMapping("/rra/v1/client/rooms")
 @RequiredArgsConstructor
 public class RoomsController  {
 

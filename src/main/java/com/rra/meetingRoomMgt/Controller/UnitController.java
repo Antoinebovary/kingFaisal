@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/units")
+@RequestMapping("/rra/v1/admin/units")
 @RequiredArgsConstructor
 public class UnitController {
 
