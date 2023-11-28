@@ -101,9 +101,6 @@ public class Users implements UserDetails {
 //        return null;
     }
 
-
-
-
     @Override
     public String getUsername() {
         // email in our case

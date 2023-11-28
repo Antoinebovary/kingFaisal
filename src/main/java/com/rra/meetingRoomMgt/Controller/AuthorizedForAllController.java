@@ -7,6 +7,7 @@ import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import com.rra.meetingRoomMgt.modal.Users;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -35,12 +36,12 @@ public class AuthorizedForAllController {
     ResponseEntity<Object> signin(@RequestBody SigninRequest request) {
         try {
 
-            Users user = (Users) userAuthenticationService.signin(request);
+            UserDetails userDetails = (UserDetails) userAuthenticationService.signin(request);
             // Generate JWT token and refresh token
-            String jwt = jwtService.generateToken(user);
-            String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+            String jwt = jwtService.generateToken(userDetails);
+            String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), userDetails);
 
-            return ResponseEntity.ok(Map.of("msg", "logged in successfuly", "user", user, "accessToken", jwt, "refreshToken", refreshToken));
+            return ResponseEntity.ok(Map.of("msg", "logged in successfuly", "user", userDetails, "accessToken", jwt, "refreshToken", refreshToken));
         } catch (AuthenticationException e) {
             // Authentication failed, handle the failure
             handleLoginFailure(request.getEmail());
