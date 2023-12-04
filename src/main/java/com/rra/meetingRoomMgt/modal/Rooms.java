@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -28,6 +26,9 @@ public class Rooms {
 
     @Column(name = "RoomDescription", nullable = false)
     private String roomDescription;
+
+    @Column(name = "roomImage")
+    private String roomImage;
 
     @Column(name = "status", nullable = false)
     private Integer status;
