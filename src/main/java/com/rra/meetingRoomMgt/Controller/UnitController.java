@@ -3,13 +3,16 @@ package com.rra.meetingRoomMgt.Controller;
 import com.rra.meetingRoomMgt.Service.UnitsService;
 
 import com.rra.meetingRoomMgt.modal.Units;
+import com.rra.meetingRoomMgt.modal.Users;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @CrossOrigin
@@ -22,6 +25,7 @@ public class UnitController {
     @GetMapping(path = "/listall")
     public ResponseEntity<List<Units>> getAllUnits() {
         List<Units> units = unitsService.getAllUnits();
+
         return new ResponseEntity<>(units, HttpStatus.OK);
     }
 

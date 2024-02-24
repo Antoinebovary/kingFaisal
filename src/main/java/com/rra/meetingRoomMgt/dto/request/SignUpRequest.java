@@ -1,6 +1,8 @@
 package com.rra.meetingRoomMgt.dto.request;
 
 
+import com.rra.meetingRoomMgt.modal.Departments;
+import com.rra.meetingRoomMgt.modal.Units;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,9 @@ public class SignUpRequest {
     private String userStatus;
     private Integer loginFailCount;
     private String position;
+    private Departments departments;
+    private Integer unitID;
+    private Units units;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

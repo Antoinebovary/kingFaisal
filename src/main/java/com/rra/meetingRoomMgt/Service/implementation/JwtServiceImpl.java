@@ -1,6 +1,7 @@
 package com.rra.meetingRoomMgt.Service.implementation;
 
 import com.rra.meetingRoomMgt.Service.JwtService;
+import com.rra.meetingRoomMgt.modal.Users;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
@@ -34,19 +35,28 @@ public class JwtServiceImpl  implements JwtService{
     }
 
     public String generateToken(UserDetails userDetails) {
+        Users user = (Users) userDetails;
+
+        // Extracting user details
+        String email = userDetails.getUsername();
+        String userId = String.valueOf(user.getUserNo()); // Assuming userNo is the userId
+
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         String authoritiesString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        // Add 'userId' claim to the token
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(email)
+                .claim("userId", userId)
                 .claim("authorities", authoritiesString)  // Add authorities claim
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
 
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())

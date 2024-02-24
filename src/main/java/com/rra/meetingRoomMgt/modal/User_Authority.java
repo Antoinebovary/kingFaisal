@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_authority")
+
 public class User_Authority {
 
     @Id
@@ -19,9 +21,10 @@ public class User_Authority {
     private Integer id;
 
 
-    @ManyToOne
-    @JoinColumn(name = "Authority_no")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "authority_no")
     private Authority authority;
+
 
     @ManyToOne
     @JoinColumn(name = "user_no")

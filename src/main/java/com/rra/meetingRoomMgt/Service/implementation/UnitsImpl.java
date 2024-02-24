@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,8 @@ public class UnitsImpl implements UnitsService {
 
     @Override
     public List<Units> getAllUnits() {
+
+
         return unitRepository.findAll();
     }
 
@@ -75,7 +78,7 @@ public class UnitsImpl implements UnitsService {
     }
 
     @Override
-    public Object findUnitsById(int unitID) {
+    public Optional<Units> findUnitsById(int unitID) {
         return unitRepository.findById(unitID);
     }
 }

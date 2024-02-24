@@ -37,6 +37,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             user.setLoginFailCount(0);
             user.setUserStatus("active");
             user.setPosition(request.getPosition());
+            user.setDepartments(request.getDepartments());
+            user.setUnits(request.getUnits());
 
             // Set created_at and updated_at with the current timestamp
             LocalDateTime currentTimestamp = LocalDateTime.now();
@@ -90,6 +92,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         existingUsers.setPosition(UpdateUsers.getPosition());
         existingUsers.setEmail(UpdateUsers.getEmail());
         existingUsers.setEmpNo(UpdateUsers.getEmpNo());
+        existingUsers.setUnits(UpdateUsers.getUnits());
+        existingUsers.setDepartments(UpdateUsers.getDepartments());
 
         LocalDateTime updatedAt = LocalDateTime.now();
         existingUsers.setUpdatedAt(updatedAt);

@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rra.meetingRoomMgt.modal.Enums.BookingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "bookings")
+@Table(name = "booking_room")
 public class Bookings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +28,7 @@ public class Bookings {
 
     @ManyToOne
     @JoinColumn(name = "RoomID")
+    @JsonBackReference
     private Rooms room;
 
     @ManyToOne
@@ -34,10 +36,10 @@ public class Bookings {
     private Users user;
 
     @Column(name = "StartTime", nullable = false)
-    private LocalDate startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "EndTime", nullable = false)
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "Purpose", nullable = false)
     private String purpose;
@@ -45,6 +47,9 @@ public class Bookings {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status;
+
+
+    private String cancelBooking;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -21,10 +21,22 @@ public class RoomNamesImpl implements RoomNamesService {
 
     @Override
     public Object saveRoomNames(RoomsNames roomsNames) {
-
         // Retrieve the Rooms entity using RoomID
         Rooms getRoom = roomsRepository.findById(roomsNames.getRoomID().getRoomID())
                 .orElse(null);
+
+        if (getRoom == null) {
+            // Handle the case where the room does not exist
+            return "Error: Room not found";
+        }
+
+        // Check if a room with the same name already exists
+        RoomsNames existingRoomName = roomNamesRepository.findByRoomNameAndRoomID(roomsNames.getRoomName(), getRoom);
+
+        if (existingRoomName != null) {
+            // Handle the case where the room name already exists
+            return "Error: Room name already exists";
+        }
 
         RoomsNames roomNames = new RoomsNames();
         roomNames.setRoomName(roomsNames.getRoomName());
@@ -37,6 +49,7 @@ public class RoomNamesImpl implements RoomNamesService {
 
         return roomNamesRepository.save(roomNames);
     }
+
 
     @Override
     public List<RoomsNames> retrieveRoomNames() {

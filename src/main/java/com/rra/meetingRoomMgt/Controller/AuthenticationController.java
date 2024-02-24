@@ -1,14 +1,19 @@
 package com.rra.meetingRoomMgt.Controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.JwtService;
+import com.rra.meetingRoomMgt.Service.UnitsService;
 import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
+import com.rra.meetingRoomMgt.modal.Departments;
+import com.rra.meetingRoomMgt.modal.Units;
 import com.rra.meetingRoomMgt.modal.Users;
 import com.rra.meetingRoomMgt.Service.UserAuthenticationService;
 import com.rra.meetingRoomMgt.dto.request.SignUpRequest;
 import com.rra.meetingRoomMgt.dto.request.SigninRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -29,6 +35,9 @@ import java.util.Map;
 public class AuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
     private final UserRepository userRepository;
+
+    @Autowired
+    private UnitsService unitsService;
 
     private final JwtService jwtService;
 
@@ -54,10 +63,32 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(Map.of("msg", "Phone number must contain only numbers"));
         }
 
-        Object SavedUser  =  userAuthenticationService.signup(request);
-        return ResponseEntity.ok(Map.of("msg", "account created successfuly", "user", SavedUser));
-    }
+        if (request.getUnitID() == null) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Unit information is missing in the request."));
+        }
 
+        Optional<Units> optionalUnit = unitsService.findUnitsById(request.getUnitID());
+        if (optionalUnit.isPresent()) {
+            Units unit = optionalUnit.get();
+            request.setUnits(unit);
+
+            Departments department = unit.getDepartment();
+            if (department != null) {
+                request.setDepartments(department);
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("msg", "Department not found for unitID: " + unit.getUnitID()));
+            }
+
+            Object savedUser = userAuthenticationService.signup(request);
+            return ResponseEntity.ok(Map.of("msg", "account created successfully", "user", savedUser));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Unit not found for unitID: " + request.getUnits().getUnitID()));
+        }
+
+
+
+
+    }
 
     @GetMapping(path = "/listall")
     public ResponseEntity<List<Users>>retrieveUsers() {
@@ -68,12 +99,31 @@ public class AuthenticationController {
 
     @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody Users updateUsers) {
-        Object UpdateUser  =  userAuthenticationService.updateUsers(updateUsers);
-        return ResponseEntity.ok(Map.of("msg", "User Updated successfuly", "User", UpdateUser));
+
+        Optional<Units> optionalUnit = (Optional<Units>) unitsService.findUnitsById(updateUsers.getUnits().getUnitID());
+        if (optionalUnit.isPresent()) {
+            Units unit = optionalUnit.get();
+            updateUsers.setUnits(unit);
+
+            // Fetch the department associated with the unit
+            Departments department = unit.getDepartment();
+            if (department != null) {
+                // Set the department in the user object
+                updateUsers.setDepartments(department);
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("msg", "Department not found for unitID: " + unit.getUnitID()));
+            }
+
+            Object updatedUser = userAuthenticationService.updateUsers(updateUsers);
+            return ResponseEntity.ok(Map.of("msg", "User updated successfully", "user", updatedUser));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Unit not found for unitID: " + updateUsers.getUnits().getUnitID()));
+        }
     }
 
-    @PutMapping("/delete")
-    public ResponseEntity<Object> delete(@RequestBody Users deleteUser) {
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> delete(@RequestParam("staffID") Users deleteUser) {
         int id = deleteUser.getStaffID();
         String newStatus = deleteUser.getUserStatus();
 

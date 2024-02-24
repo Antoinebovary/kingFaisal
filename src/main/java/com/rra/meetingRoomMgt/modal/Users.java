@@ -1,5 +1,7 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -51,11 +53,14 @@ public class Users implements UserDetails {
     @Column(name = "user_status")
     private String userStatus;
 
-//
-//    private String units;
-//
-//
-//    private String departments;
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Units units;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Departments departments;
 
     @Column(name = "lgn_fail_count")
     private Integer loginFailCount;
@@ -75,6 +80,7 @@ public class Users implements UserDetails {
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(
             name = "user_authority",
             joinColumns = @JoinColumn(name = "user_no"),
@@ -108,21 +114,25 @@ public class Users implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

@@ -2,6 +2,7 @@ package com.rra.meetingRoomMgt.Controller;
 
 import com.rra.meetingRoomMgt.Service.UserAuthorityService;
 import com.rra.meetingRoomMgt.modal.User_Authority;
+import com.rra.meetingRoomMgt.modal.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserAuthorityController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<Object> save(@RequestBody User_Authority userAuthority) {
+    public ResponseEntity<Object> save(@RequestBody User_Authority userAuthority ) {
         Object SavedUserRole  =  UserAuthorityService.mapRoles(userAuthority);
         return ResponseEntity.ok(Map.of("msg", "UserRole created successfuly", "role", SavedUserRole));
     }
