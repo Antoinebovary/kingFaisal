@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,31 +99,54 @@ public class AuthenticationController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody Users updateUsers) {
-
-        Optional<Units> optionalUnit = (Optional<Units>) unitsService.findUnitsById(updateUsers.getUnits().getUnitID());
-        if (optionalUnit.isPresent()) {
-            Units unit = optionalUnit.get();
-            updateUsers.setUnits(unit);
-
-            // Fetch the department associated with the unit
-            Departments department = unit.getDepartment();
-            if (department != null) {
-                // Set the department in the user object
-                updateUsers.setDepartments(department);
-            } else {
-                return ResponseEntity.badRequest().body(Map.of("msg", "Department not found for unitID: " + unit.getUnitID()));
-            }
-
-            Object updatedUser = userAuthenticationService.updateUsers(updateUsers);
-            return ResponseEntity.ok(Map.of("msg", "User updated successfully", "user", updatedUser));
-        } else {
-            return ResponseEntity.badRequest().body(Map.of("msg", "Unit not found for unitID: " + updateUsers.getUnits().getUnitID()));
+    public ResponseEntity<Object> updateUser(@RequestBody SignUpRequest request) {
+        // Ensure all required fields are provided
+        if (request.getFullnames() == null || request.getEmpNo() == null ||
+                request.getPassword() == null || request.getMobileNo() == null ||
+                request.getEmail() == null || request.getPosition() == null ||
+                request.getUnitID() == null) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "All fields must be provided"));
         }
+
+        // Check if the user exists
+        Optional<Users> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "User not found"));
+        }
+        Users existingUser = optionalUser.get();
+
+        // Check if the provided unit exists
+        Optional<Units> optionalUnit = unitsService.findUnitsById(request.getUnitID());
+        if (optionalUnit.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Unit not found for unitID: " + request.getUnitID()));
+        }
+        Units unit = optionalUnit.get();
+
+        // Update user information
+        existingUser.setFullnames(request.getFullnames());
+        existingUser.setEmpNo(request.getEmpNo());
+        existingUser.setPassword(request.getPassword());
+        existingUser.setMobileNo(request.getMobileNo());
+        existingUser.setPosition(request.getPosition());
+        existingUser.setUnits(unit);
+
+        // Optionally, update department information if needed
+        if (unit.getDepartment() != null) {
+            existingUser.setDepartments(unit.getDepartment());
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("msg", "Department not found for unitID: " + unit.getUnitID()));
+        }
+
+        // Save the updated user
+        Users savedUser = userRepository.save(existingUser);
+
+        return ResponseEntity.ok(Map.of("msg", "User updated successfully", "user", savedUser));
     }
 
 
-    @DeleteMapping("/delete")
+
+
+    @DeleteMapping("/delete/")
     public ResponseEntity<Object> delete(@RequestParam("staffID") Users deleteUser) {
         int id = deleteUser.getStaffID();
         String newStatus = deleteUser.getUserStatus();
@@ -130,6 +154,8 @@ public class AuthenticationController {
         userAuthenticationService.deleteUsers(id, newStatus);
         return ResponseEntity.ok(Map.of("msg", "Users Deleted successfuly", "id", id));
     }
+
+
 
 
     @PostMapping("/refresh")

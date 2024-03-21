@@ -61,10 +61,10 @@ public class BookingsController {
     public ResponseEntity<List<Bookings>> retrieveConfirmedBookings() {
         List<Bookings> confirmedBookings = bookingsService.retrieveConfirmedBookings();
 
-        // Loop through each confirmed booking and fetch the room details
+
         confirmedBookings.forEach(booking -> {
-            Rooms room = booking.getRoom(); // Assuming there is a method to fetch room details
-            booking.setRoom(room); // Set the room details in the booking object
+            Rooms room = booking.getRoom();
+            booking.setRoom(room);
         });
 
         return new ResponseEntity<>(confirmedBookings, HttpStatus.OK);
@@ -102,7 +102,7 @@ public class BookingsController {
 
 
     @DeleteMapping("/admin/cancel")
-    public ResponseEntity<Object> cancelBooking(@RequestBody Bookings request) {
+    public ResponseEntity<Object> cancelBookingAdmin(@RequestBody Bookings request) {
         int bookingID = request.getBookingID();
         String purpose = request.getPurpose();
  
@@ -115,6 +115,24 @@ public class BookingsController {
                     .body(Map.of("msg", "Booking not found for ID: " + bookingID));
         }
     }
+
+
+    @DeleteMapping("/client/bookings/cancel")
+    public ResponseEntity<Object> cancelBookingUser(@RequestBody Bookings request) {
+        // Call the service method to cancel the booking
+        int bookingID = request.getBookingID();
+        String purpose = request.getPurpose();
+        Object cancelledBooking = bookingsService.cancelBooking(bookingID, purpose);
+
+        if (cancelledBooking != null) {
+            return ResponseEntity.ok(Map.of("msg", "Booking cancelled successfully", "id", bookingID, "status", BookingStatus.CANCELED, "purpose", purpose));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("msg", "Booking not found for ID: " + bookingID));
+        }
+    }
+
+
 
 
 }

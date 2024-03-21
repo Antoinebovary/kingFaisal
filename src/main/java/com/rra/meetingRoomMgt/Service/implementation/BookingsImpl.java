@@ -131,16 +131,17 @@ public class BookingsImpl  implements BookingsService {
 
 
     @Override
-    public Object cancelBooking(int id,String purpose) {
+    public Object cancelBooking(int id, String purpose) {
         Bookings existingBooking = bookingsRepo.findById(id).orElse(null);
 
         if (existingBooking == null) {
             return null;
         }
 
+        bookingsRepo.delete(existingBooking);
         existingBooking.setCancelBooking(purpose);
-
         existingBooking.setStatus(BookingStatus.CANCELED);
-        return bookingsRepo.save(existingBooking);
+        return existingBooking;
     }
+
 }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -98,17 +99,22 @@ public class RoomsController {
 
 
 
-//    @PutMapping("update")
-//    public ResponseEntity<Rooms> getRoomById(@RequestParam Integer roomID) {
-//        Rooms room = roomsService.getRoomById(roomID);
-//
-//        if (room != null) {
-//            return ResponseEntity.ok(room);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    @PutMapping("/{roomId}")
+    public ResponseEntity<String> updateRoomDetails(@PathVariable Integer roomId,
+                                                    @RequestBody Rooms updatedRoomDetails) {
+        Optional<Rooms> optionalRoom = Optional.ofNullable(roomsService.getRoomById(roomId));
+        if (optionalRoom.isPresent()) {
+            Rooms room = optionalRoom.get();
+            room.setRoomLocation(updatedRoomDetails.getRoomLocation());
+            room.setCapacity(updatedRoomDetails.getCapacity());
+            room.setRoomDescription(updatedRoomDetails.getRoomDescription());
 
+            roomsService.saveRoom(room);
+            return ResponseEntity.ok("Room details updated successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found");
+        }
+    }
 
     @GetMapping("/available")
     public ResponseEntity<List<Rooms>> getAvailableRooms(
@@ -154,19 +160,55 @@ public class RoomsController {
 
 
 
-    @PutMapping("/{roomID}")
-    public ResponseEntity<String> updateRoom(@RequestPart MultipartFile file,@RequestParam Integer roomID,
-                                             @RequestBody Rooms updatedRoom) {
+    @PutMapping(value = {"/update", "/update/"})
+    public ResponseEntity<String> updateRoom(
+                                             @RequestParam Integer roomID,
+                                             @RequestParam("roomLocation") String roomLocation,
+                                             @RequestParam("capacity") Integer capacity,
+                                             @RequestParam("roomDescription") String roomDescription) {
         if (roomsService.roomExists(roomID)) {
-            updatedRoom.setRoomID(roomID);
+            Rooms updatedRoom = roomsService.getRoomById(roomID);
+
+            // Update room details
+            updatedRoom.setRoomLocation(roomLocation);
+            updatedRoom.setCapacity(capacity);
+            updatedRoom.setRoomDescription(roomDescription);
             updatedRoom.setUpdatedAt(LocalDateTime.now());
-            updatedRoom.setStatus(2);
+
+            // Update image if provided
+//            if (file != null) {
+//                try {
+//                    // Handle file upload similar to the @PostMapping method
+//                    // Save the file to the specified directory
+//                    String fileName = file.getOriginalFilename();
+//                    String filePath = uploadDirectory.replace("\\", "/") + "/" + fileName;
+//
+//                    // Transfer the file
+//                    file.transferTo(new File(filePath));
+//
+//                    // Construct the image URL for the response
+//                    String baseUrl = "http://localhost:8080/rra/v1/home";
+//                    String relativeImagePath = "/uploads/" + fileName;
+//                    String imageUrl = baseUrl + relativeImagePath;
+//
+//                    // Set the image path in the updated room
+//                    updatedRoom.setImagePath(imageUrl);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                            .body("Failed to upload file: " + e.getMessage());
+//                }
+//            }
+
+            // Save the updated room
             roomsService.saveRoom(updatedRoom);
+
             return ResponseEntity.ok("Room updated successfully!");
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping("/id")
     public ResponseEntity<String> deleteRoom(@RequestParam Integer roomID) {
