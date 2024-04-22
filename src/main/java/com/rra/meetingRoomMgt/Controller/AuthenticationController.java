@@ -165,7 +165,7 @@ public class AuthenticationController {
 
     @GetMapping("/profile")
     public UserDetails getUserProfile(Authentication authentication) {
-        // Retrieve user details from the authentication object
+
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
 
