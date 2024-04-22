@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/admin/roomNames")
+@RequestMapping("/rra/v1")
 @RequiredArgsConstructor
 public class RoomNamesController {
 
@@ -21,26 +21,37 @@ public class RoomNamesController {
     private final RoomNamesService roomNamesService;
 
 
-    @PostMapping("/save")
+    @PostMapping("/admin/roomNames/save")
     public ResponseEntity<Object> save(@RequestBody RoomsNames roomsNames) {
         Object SavedRoomNames  =  roomNamesService.saveRoomNames(roomsNames);
         return ResponseEntity.ok(Map.of("msg", "roomName created successfuly", "roomName", SavedRoomNames));
     }
 
-    @GetMapping(path = "/listall")
+    @GetMapping(path = "/client/roomNames/listall")
     public ResponseEntity<List<RoomsNames>>  retrieveRoomNames() {
         List<RoomsNames> roooNames = roomNamesService.retrieveRoomNames();
         return new ResponseEntity<>(roooNames, HttpStatus.OK);
     }
 
+    @GetMapping({"/client/roomNames/get/{id}","/admin/roomNames/get/{id}"})
+    public ResponseEntity<Object> getRoomNameById(@PathVariable("id") int roomNameId) {
+        RoomsNames roomName = roomNamesService.getRoomNameById(roomNameId);
+        if (roomName != null) {
+            return ResponseEntity.ok(Map.of("msg", "Room name found", "roomName", roomName));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    @PutMapping("/update")
+
+
+    @PutMapping("/admin/roomNames/update")
     public ResponseEntity<Object> update(@RequestBody RoomsNames RoomsNames) {
         Object UpdatedRoomNames  =  roomNamesService.updateRoomNames(RoomsNames);
         return ResponseEntity.ok(Map.of("msg", "roomName Updated successfuly", "roomNameUpdated", UpdatedRoomNames));
     }
 
-    @PutMapping("/delete")
+    @PutMapping("/admin/roomNames/delete")
     public ResponseEntity<Object> delete(@RequestBody RoomsNames deletedRoomName) {
         int id = deletedRoomName.getRoomNameID();
         int newStatus = deletedRoomName.getStatus();

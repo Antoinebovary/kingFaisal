@@ -10,6 +10,7 @@ public interface RoomNamesService {
     List<RoomsNames> retrieveRoomNames();
     Object updateRoomNames(RoomsNames roomsNames);
     Object deleteRoomNames(int id, int newStatus);
+    RoomsNames getRoomNameById(int roomNameId);
 
 
 }

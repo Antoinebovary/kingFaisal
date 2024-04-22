@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository 
+@Repository
 public interface RoomNamesRepository extends JpaRepository<RoomsNames, Integer> {
 
     @Modifying

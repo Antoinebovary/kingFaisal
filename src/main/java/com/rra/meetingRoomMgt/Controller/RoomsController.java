@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/admin/rooms")
+@RequestMapping("/rra/v1/")
 public class RoomsController {
 
     @Value("${upload.directory}")
@@ -30,7 +30,7 @@ public class RoomsController {
     @Autowired
     private RoomsService roomsService;
 
-    @PostMapping("/upload")
+    @PostMapping("admin/rooms/upload")
     public ResponseEntity<String> handleFileUpload(@RequestPart MultipartFile file,
                                                    @RequestParam("roomLocation") String roomLocation,
                                                    @RequestParam("capacity") Integer capacity,
@@ -99,7 +99,7 @@ public class RoomsController {
 
 
 
-    @PutMapping("/{roomId}")
+    @PutMapping("admin/rooms/{roomId}")
     public ResponseEntity<String> updateRoomDetails(@PathVariable Integer roomId,
                                                     @RequestBody Rooms updatedRoomDetails) {
         Optional<Rooms> optionalRoom = Optional.ofNullable(roomsService.getRoomById(roomId));
@@ -116,7 +116,7 @@ public class RoomsController {
         }
     }
 
-    @GetMapping("/available")
+    @GetMapping("admin/rooms/available")
     public ResponseEntity<List<Rooms>> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
@@ -125,7 +125,7 @@ public class RoomsController {
     }
 
 
-    @GetMapping("/all")
+    @GetMapping("/home/rooms/all")
     public ResponseEntity<List<Rooms>> getAllRooms() {
         List<Rooms> rooms = roomsService.getAllRooms();
         if (rooms != null) {

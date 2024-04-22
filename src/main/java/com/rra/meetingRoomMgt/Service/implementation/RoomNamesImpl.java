@@ -83,4 +83,8 @@ public class RoomNamesImpl implements RoomNamesService {
     public Object deleteRoomNames(int id, int newStatus) {
         return roomNamesRepository.updateAuthorityByStatus(id, newStatus);
     }
+    @Override
+    public RoomsNames getRoomNameById(int roomNameId) {
+        return roomNamesRepository.findById(roomNameId).orElse(null);
+    }
 }
