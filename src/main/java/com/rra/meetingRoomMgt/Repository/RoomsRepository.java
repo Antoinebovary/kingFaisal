@@ -18,6 +18,7 @@ public interface RoomsRepository extends JpaRepository<Rooms, Integer> {
     @Query("UPDATE Rooms c SET c.status = :newStatus WHERE c.roomID = :id")
     @Transactional
     Object updateRoomsByStatus(@Param("id") Integer id, @Param("newStatus") int newStatus);
+    boolean existsByRoomLocationAndCapacityAndRoomDescription(String roomLocation, Integer capacity, String roomDescription);
     @Query("SELECT r FROM Rooms r WHERE r NOT IN "
             + "(SELECT b.room FROM Bookings b "
             + "WHERE (b.startTime <= :endTime AND b.endTime >= :startTime) OR "

@@ -20,9 +20,14 @@ public class RoomsService {
     public RoomsService(RoomsRepository roomsRepository) {
         this.roomsRepository = roomsRepository;
     }
+    public boolean roomExists(String roomLocation, Integer capacity, String roomDescription) {
+        // Check if a room with the same details already exists
+        return roomsRepository.existsByRoomLocationAndCapacityAndRoomDescription(roomLocation, capacity, roomDescription);
+    }
 
-    public void saveRoom(Rooms room) {
+    public Rooms saveRoom(Rooms room) {
         roomsRepository.save(room);
+        return room;
     }
 
     public Rooms getRoomById(Integer roomID) {

@@ -1,8 +1,6 @@
 package com.rra.meetingRoomMgt.Controller;
 
 import com.rra.meetingRoomMgt.Service.implementation.RoomsService;
-import com.rra.meetingRoomMgt.modal.Bookings;
-import com.rra.meetingRoomMgt.modal.Enums.BookingStatus;
 import com.rra.meetingRoomMgt.modal.Rooms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -31,11 +30,17 @@ public class RoomsController {
     private RoomsService roomsService;
 
     @PostMapping("admin/rooms/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestPart MultipartFile file,
-                                                   @RequestParam("roomLocation") String roomLocation,
-                                                   @RequestParam("capacity") Integer capacity,
-                                                   @RequestParam("roomDescription") String roomDescription) {
-        // Remove trailing backslash from uploadDirectory if present
+    public Object handleFileUpload(@RequestPart MultipartFile file,
+                                   @RequestParam("roomLocation") String roomLocation,
+                                   @RequestParam("capacity") Integer capacity,
+                                   @RequestParam("roomDescription") String roomDescription) {
+
+        if (roomsService.roomExists(roomLocation, capacity, roomDescription)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Room with the same details already exists");
+        }
+
+
         if (uploadDirectory.endsWith(File.separator)) {
             uploadDirectory = uploadDirectory.substring(0, uploadDirectory.length() - 1);
         }
@@ -87,9 +92,15 @@ public class RoomsController {
             room.setCreatedAt(LocalDateTime.now());
 
             // Save the Rooms object to the database
-            roomsService.saveRoom(room);
+            Rooms savedRoom = roomsService.saveRoom(room);
+            Integer roomId = savedRoom.getRoomID();
 
-            return ResponseEntity.ok("Room created successfully!");
+// Construct the response object including the room ID
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("roomId", roomId);
+            responseData.put("message", "Room Saved successfully!");
+
+            return ResponseEntity.ok(responseData);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

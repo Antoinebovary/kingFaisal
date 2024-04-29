@@ -23,9 +23,15 @@ public class RoomNamesController {
 
     @PostMapping("/admin/roomNames/save")
     public ResponseEntity<Object> save(@RequestBody RoomsNames roomsNames) {
-        Object SavedRoomNames  =  roomNamesService.saveRoomNames(roomsNames);
-        return ResponseEntity.ok(Map.of("msg", "roomName created successfuly", "roomName", SavedRoomNames));
+        Object savedRoomNames = roomNamesService.saveRoomNames(roomsNames);
+
+        if (savedRoomNames instanceof String && ((String) savedRoomNames).startsWith("Error")) {
+            return ResponseEntity.badRequest().body(Map.of("error", savedRoomNames));
+        } else {
+            return ResponseEntity.ok(Map.of("msg", "Room name created successfully", "roomName", savedRoomNames));
+        }
     }
+
 
     @GetMapping(path = "/client/roomNames/listall")
     public ResponseEntity<List<RoomsNames>>  retrieveRoomNames() {

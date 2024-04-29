@@ -7,10 +7,12 @@ import com.rra.meetingRoomMgt.Service.RoomNamesService;
 import com.rra.meetingRoomMgt.modal.Rooms;
 import com.rra.meetingRoomMgt.modal.RoomsNames;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,22 +22,18 @@ public class RoomNamesImpl implements RoomNamesService {
     private final RoomsRepository roomsRepository;
 
     @Override
+
     public Object saveRoomNames(RoomsNames roomsNames) {
-        // Retrieve the Rooms entity using RoomID
-        Rooms getRoom = roomsRepository.findById(roomsNames.getRoomID().getRoomID())
-                .orElse(null);
+        Rooms getRoom = roomsRepository.findById(roomsNames.getRoomID().getRoomID()).orElse(null);
 
         if (getRoom == null) {
-            // Handle the case where the room does not exist
-            return "Error: Room not found";
+            throw new RuntimeException("Room not found");
         }
 
-        // Check if a room with the same name already exists
         RoomsNames existingRoomName = roomNamesRepository.findByRoomNameAndRoomID(roomsNames.getRoomName(), getRoom);
 
         if (existingRoomName != null) {
-            // Handle the case where the room name already exists
-            return "Error: Room name already exists";
+            throw new RuntimeException("Room name already exists");
         }
 
         RoomsNames roomNames = new RoomsNames();
@@ -51,6 +49,8 @@ public class RoomNamesImpl implements RoomNamesService {
     }
 
 
+
+
     @Override
     public List<RoomsNames> retrieveRoomNames() {
         return roomNamesRepository.findAll();
@@ -58,26 +58,33 @@ public class RoomNamesImpl implements RoomNamesService {
 
     @Override
     public Object updateRoomNames(RoomsNames roomsNames) {
-        RoomsNames existingRoomsNames = roomNamesRepository.findById(roomsNames.getRoomNameID()).orElse(null);
+        Rooms getRoom = roomsRepository.findById(roomsNames.getRoomID().getRoomID())
+                .orElse(null);
 
-        if (existingRoomsNames == null) {
-            return null;
+        if (getRoom == null) {
+            // Handle the case where the room does not exist
+            return "Error: Room not found";
         }
 
-        int status = existingRoomsNames.getStatus();
-        LocalDateTime createdAt = existingRoomsNames.getCreatedAt();
 
-        existingRoomsNames.setRoomName(roomsNames.getRoomName());
-        existingRoomsNames.setRoomID(roomsNames.getRoomID());
+        RoomsNames existingRoomName = roomNamesRepository.findByRoomNameAndRoomID(roomsNames.getRoomName(), getRoom);
 
-        LocalDateTime updatedAt = LocalDateTime.now();
-        existingRoomsNames.setUpdatedAt(updatedAt);
+        if (existingRoomName != null) {
+            return "Error: Room name already exists";
+        }
 
-        existingRoomsNames.setStatus(status);
-        existingRoomsNames.setCreatedAt(createdAt);
+        RoomsNames roomNames = new RoomsNames();
+        roomNames.setRoomName(roomsNames.getRoomName());
+        roomNames.setRoomID(getRoom);
+        roomNames.setStatus(1);
 
-        return roomNamesRepository.save(existingRoomsNames);
+        LocalDateTime currentTimestamp = LocalDateTime.now();
+        roomNames.setCreatedAt(currentTimestamp);
+        roomNames.setUpdatedAt(currentTimestamp);
+
+        return roomNamesRepository.save(roomNames);
     }
+
 
     @Override
     public Object deleteRoomNames(int id, int newStatus) {
