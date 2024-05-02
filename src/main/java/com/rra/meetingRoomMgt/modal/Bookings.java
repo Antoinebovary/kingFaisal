@@ -1,6 +1,8 @@
 package com.rra.meetingRoomMgt.modal;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rra.meetingRoomMgt.modal.Enums.BookingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,14 +28,13 @@ public class Bookings {
     @Column(name = "BookingID")
     private Integer bookingID;
 
-    @ManyToOne
-    @JoinColumn(name = "RoomID")
-    @JsonBackReference
-    private Rooms room;
 
     @ManyToOne
+    @JoinColumn(name = "RoomID")
+    private Rooms room;
+
     @JoinColumn(name = "StaffID")
-    private Users user;
+   private Integer StaffID;
 
     @Column(name = "StartTime", nullable = false)
     private LocalDateTime startTime;

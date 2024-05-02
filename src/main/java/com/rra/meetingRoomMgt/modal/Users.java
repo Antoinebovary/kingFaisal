@@ -75,6 +75,9 @@ public class Users implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "users")
+    private ForgotPassword forgotPassword;
+
     public Users(Integer userNo) {
         this.userNo = userNo;
     }

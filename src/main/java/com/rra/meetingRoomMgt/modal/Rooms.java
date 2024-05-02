@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,9 +48,7 @@ public class Rooms {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "room")
-    private List<Bookings> bookings;
+
 
     public Rooms(int roomID) {
         this.roomID = roomID;
