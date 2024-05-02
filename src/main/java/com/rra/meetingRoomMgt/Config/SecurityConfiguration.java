@@ -38,15 +38,14 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/rra/v1/home/**").permitAll()
                         .requestMatchers("/rra/v1/admin/**").hasAuthority("admin")
                         .requestMatchers("/rra/v1/client/**").hasAuthority("user")
-
-                       .anyRequest().permitAll()
-                      )
+                        .anyRequest().permitAll()
+                )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .cors(Customizer.withDefaults())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -59,6 +58,7 @@ public class SecurityConfiguration {
                 );
         return http.build();
     }
+
 
     private void handleAuthenticationEntryPoint(HttpServletResponse response, Exception authException) throws IOException {
         logError("Unauthorized access. Authorized access only.", (Exception) authException.getCause());

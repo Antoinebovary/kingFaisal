@@ -87,10 +87,8 @@ public class BookingsImpl  implements BookingsService {
         }
 
         Rooms getRoom = roomsRepository.findById(bookings.getRoom().getRoomID()).orElse(null);
-        Users getUser = usersRepository.findById(bookings.getUser().getStaffID()).orElse(null);
-
         existingBookings.setRoom(getRoom);
-        existingBookings.setUser(getUser);
+        existingBookings.setStaffID(bookings.getStaffID());
         existingBookings.setStartTime(bookings.getStartTime());
         existingBookings.setEndTime(bookings.getEndTime());
         existingBookings.setPurpose(bookings.getPurpose());
