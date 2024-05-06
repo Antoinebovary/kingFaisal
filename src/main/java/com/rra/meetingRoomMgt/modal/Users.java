@@ -60,6 +60,7 @@ public class Users implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @JsonBackReference
     private Departments departments;
 
     @Column(name = "lgn_fail_count")
@@ -76,6 +77,7 @@ public class Users implements UserDetails {
     private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "users")
+    @JsonIgnore
     private ForgotPassword forgotPassword;
 
     public Users(Integer userNo) {

@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class ForgotPassword {
     @Column(nullable = false)
     private Date ExpiredDate;
     @OneToOne
+    @JsonIgnore
     private Users users;
 }

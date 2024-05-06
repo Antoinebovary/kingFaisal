@@ -31,7 +31,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/rra/v1/auth")
+@RequestMapping("/rra/v1/admin/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
