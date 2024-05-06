@@ -1,5 +1,6 @@
 package com.rra.meetingRoomMgt.modal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class Units {
     private String unitName;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "DepartmentID")
     private Departments department;
 
@@ -38,5 +40,6 @@ public class Units {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "units")
+    @JsonIgnore
     private Set<Users> users;
 }
