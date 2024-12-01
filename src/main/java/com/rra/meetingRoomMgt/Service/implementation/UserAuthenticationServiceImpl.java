@@ -104,8 +104,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         return userRepository.save(existingUsers);
     }
 
-    @Override
-    public Object deleteUsers(int id, String newStatus) {
-        return userRepository.updateUsersByStatus(id, newStatus);
+    public void deleteUsers(int id) {
+        userRepository.deleteById(id);
     }
 }

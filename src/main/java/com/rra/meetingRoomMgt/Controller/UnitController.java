@@ -49,7 +49,7 @@ public class UnitController {
         }
     }
 
-    @PutMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUnits(@RequestBody Units units) {
         int id = units.getUnitID();
         Object deleteUnit = unitsService.deleteUnits(id);

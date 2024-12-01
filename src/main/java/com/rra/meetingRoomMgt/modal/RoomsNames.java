@@ -25,7 +25,6 @@ public class RoomsNames {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "RoomID")
-    @JsonManagedReference
     private Rooms roomID;
 
     @Column(name = "status", nullable = false)

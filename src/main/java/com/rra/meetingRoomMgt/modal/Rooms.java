@@ -7,6 +7,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +32,8 @@ public class Rooms {
     private String roomLocation;
 
     @Column(name = "Capacity", nullable = false)
+    @Min(value = 0, message = "Capacity cannot be less than 0")
+    @Max(value = 50, message = "Capacity cannot exceed 50")
     private Integer capacity;
 
     @Column(name = "RoomDescription", nullable = false)

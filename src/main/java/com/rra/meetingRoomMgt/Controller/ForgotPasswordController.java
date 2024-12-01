@@ -40,14 +40,19 @@ public class ForgotPasswordController {
 
     }
 
-    @PostMapping("/VerifyEmail/{email}")
+    @RequestMapping("/VerifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
+
+
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required.");
+        }
 
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Your Email is not found"));
 
         Optional<ForgotPassword> existingEntry = forgetPasswordRepo.findByUsersEmail(email);
-
+        System.out.println("Ndahagera 000");
         if (existingEntry.isPresent()) {
             // If an existing entry is found, update the OTP
             ForgotPassword existingForgotPassword = existingEntry.get();
@@ -55,15 +60,15 @@ public class ForgotPasswordController {
             existingForgotPassword.setOTP(otp);
             existingForgotPassword.setExpiredDate(new Date(System.currentTimeMillis() + 4 * 60 * 10000));
             forgetPasswordRepo.save(existingForgotPassword);
-
+            System.out.println("Ndahagera");
             MailBody mailBody = MailBody.builder()
                     .to(email)
                     .text("Here Is Your Updated OTP: " + otp)
                     .subject("Updated OTP for Forget Password")
                     .build();
-
+            System.out.println("Ndahagera 1");
             mailSenderService.EmailSender(mailBody);
-
+            System.out.println("Ndahagera 2");
             return ResponseEntity.ok("Email already sent for verification with updated OTP");
         } else {
             // If no existing entry is found, save a new OTP
@@ -90,7 +95,7 @@ public class ForgotPasswordController {
 
 
 
-    @PostMapping("/VerifyOTP/{otp}/{email}")
+    @RequestMapping("/VerifyOTP/{otp}/{email}")
 public ResponseEntity<String> VerifyOtp(@PathVariable Integer otp,@PathVariable String email){
     Users user =  userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("Your Email is not  found"));
     ForgotPassword forgotPassword = forgetPasswordRepo.findOtpAndEmail(otp,user).orElseThrow(()->new RuntimeException("Invalid OTP for Email" + email));
@@ -102,7 +107,7 @@ public ResponseEntity<String> VerifyOtp(@PathVariable Integer otp,@PathVariable 
     return new  ResponseEntity<>("OTP Verified", HttpStatus.OK);
 }
 
-@PostMapping("/ChangePassword/{email}")
+@RequestMapping("/ChangePassword/{email}")
 public ResponseEntity<String> ChangePassword(@PathVariable String email, @RequestBody ChangePassword changePassword){
 
     if (!Objects.equals(changePassword.password(),changePassword.confirmPassw())){

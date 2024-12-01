@@ -3,7 +3,9 @@ package com.rra.meetingRoomMgt.Controller;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rra.meetingRoomMgt.Repository.UserRepository;
 import com.rra.meetingRoomMgt.Service.JwtService;
+import com.rra.meetingRoomMgt.Service.MailSenderService;
 import com.rra.meetingRoomMgt.Service.UnitsService;
+import com.rra.meetingRoomMgt.dto.MailBody;
 import com.rra.meetingRoomMgt.dto.request.RefreshTokenRequest;
 import com.rra.meetingRoomMgt.dto.response.JwtAuthenticationResponse;
 import com.rra.meetingRoomMgt.modal.Departments;
@@ -36,6 +38,7 @@ import java.util.Optional;
 public class AuthenticationController {
     private final UserAuthenticationService userAuthenticationService;
     private final UserRepository userRepository;
+    private final MailSenderService mailSenderService;
 
     @Autowired
     private UnitsService unitsService;
@@ -79,6 +82,13 @@ public class AuthenticationController {
             } else {
                 return ResponseEntity.badRequest().body(Map.of("msg", "Department not found for unitID: " + unit.getUnitID()));
             }
+
+//            MailBody mailBody = MailBody.builder()
+//                    .to(request.getEmail())
+//                    .text("Welcome To Room Booking App")
+//                    .subject("Welcome")
+//                    .build();
+//            mailSenderService.EmailSender(mailBody);
 
             Object savedUser = userAuthenticationService.signup(request);
             return ResponseEntity.ok(Map.of("msg", "account created successfully", "user", savedUser));
@@ -185,7 +195,7 @@ public class AuthenticationController {
         int id = deleteUser.getStaffID();
         String newStatus = deleteUser.getUserStatus();
 
-        userAuthenticationService.deleteUsers(id, newStatus);
+        userAuthenticationService.deleteUsers(id);
         return ResponseEntity.ok(Map.of("msg", "Users Deleted successfuly", "id", id));
     }
 

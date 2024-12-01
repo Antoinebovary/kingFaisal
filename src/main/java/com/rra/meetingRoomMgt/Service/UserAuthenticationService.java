@@ -15,5 +15,5 @@ public interface UserAuthenticationService {
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
     List<Users> retrieveUsers();
     Object updateUsers(Users UpdateUsers);
-    Object deleteUsers(int id, String newStatus);
+    public void deleteUsers(int id);
 }

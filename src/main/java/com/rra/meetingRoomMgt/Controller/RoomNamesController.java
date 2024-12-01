@@ -33,7 +33,7 @@ public class RoomNamesController {
     }
 
 
-    @GetMapping(path = "/client/roomNames/listall")
+    @GetMapping(path = "/roomNames/listall")
     public ResponseEntity<List<RoomsNames>>  retrieveRoomNames() {
         List<RoomsNames> roooNames = roomNamesService.retrieveRoomNames();
         return new ResponseEntity<>(roooNames, HttpStatus.OK);

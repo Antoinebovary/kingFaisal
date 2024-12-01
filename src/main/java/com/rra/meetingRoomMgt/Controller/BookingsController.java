@@ -37,7 +37,7 @@ public class BookingsController {
     }
 
 
-    @GetMapping("/client/bookings/listall")
+    @GetMapping("/bookings/listall")
     public ResponseEntity<List<Map<String, Object>>> retrieveBookingsWithRoomIds() {
         List<Map<String, Object>> bookingsWithRoomIds = bookingsService.retrieveBookingsWithRoomIds();
         return ResponseEntity.ok(bookingsWithRoomIds);
